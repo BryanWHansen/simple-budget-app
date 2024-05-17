@@ -4,6 +4,9 @@ import ListGroup from "./components/ListGroup";
 import Button from "./components/Button";
 import LikeButton from "./components/LikeButton";
 import Summary from "./components/Summary";
+import Form from "./components/Form";
+import StateForm from "./components/StateForm";
+import Divider from "@mui/material/Divider";
 
 function App() {
   const message = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus et nunc vulputate, dignissim odio a, tincidunt massa. Donec pharetra sem id diam lacinia, a iaculis neque pulvinar. Praesent erat orci, scelerisque sit amet sapien sit amet, ultrices faucibus velit. Quisque eget turpis a ante commodo hendrerit eget vitae metus. Sed quam risus, tempor quis vulputate et, placerat interdum dui. Cras fermentum venenatis ipsum sed luctus. Donec aliquet tincidunt pellentesque. Phasellus egestas ante enim, quis tincidunt odio facilisis a. Cras facilisis placerat justo eu tincidunt. Cras quis tellus congue, luctus purus vel, efficitur libero. Mauris arcu sapien, mollis facilisis magna id.'
@@ -28,12 +31,19 @@ function App() {
       <Button color="primary" onclick={() => setAlertVisible(true)}>
         My Button
       </Button>
-      <ListGroup
+      <Divider component="div" style={{margin: "5px 0px"}}/>
+      {/* <ListGroup
         items={cities}
         heading="cities"
         onSelectItem={handleSelectItem}
       />
-      <LikeButton />
+      <LikeButton /> */}
+      <div><h3>REF HOOK FORM</h3></div>
+      <Form />
+      <Divider component="div" style={{margin: "5px 0px"}}/>
+      <div><h3>STATE HOOK FORM</h3></div>
+      <StateForm />
+      <Divider component="div" style={{margin: "5px 0px"}}/>
       <Summary maxChars={summaryState.maxChar} buttonText={summaryState.buttonText} handleButtonClick={handleButtonClick}>{message}</Summary>
     </div>
   );
