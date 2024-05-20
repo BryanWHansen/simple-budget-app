@@ -1,38 +1,71 @@
-import { FormEvent, useRef } from "react";
+import { categories } from "../App.interfaces";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 
-const Form = () => {
-  const nameRef = useRef<HTMLInputElement>(null);
-  const ageRef = useRef<HTMLInputElement>(null);
-  const person = {name: '', age: 0};
+interface FormProps {
+    onSubmit: (data: FormData) => void
+}
 
-  const handleSubmit = (event: FormEvent) => {
-    event.preventDefault();
-    if (nameRef.current !== null){
-        person.name = (nameRef.current.value);
-    }
-    if (ageRef.current !== null){
-        person.age = parseInt(ageRef.current.value);
-    }
-    console.log(person)
-  };
+const schema = z.object({
+  description: z.string().min(3).max(50),
+  amount: z.number({ invalid_type_error: 'Amount is required.'}).min(0.01).max(100_000),
+  category: z.enum(categories, {
+    errorMap: () => ({ message: 'Category is required.'})
+  }),
+});
+
+type FormData = z.infer<typeof schema>;
+
+const Form = ({ onSubmit }: FormProps) => {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<FormData>({ resolver: zodResolver(schema) });
+
   return (
-    <form onSubmit={(event) => handleSubmit(event)}>
-      <div className="mb-3">
-        <label htmlFor="name" className="form-label">
-          Name
-        </label>
-        <input ref={nameRef} id="name" type="text" className="form-control" />
-      </div>
-      <div className="mb-3">
-        <label htmlFor="age" className="form-label">
-          Age
-        </label>
-        <input ref={ageRef} id="age" type="number" className="form-control" />
-      </div>
-      <button type="submit" className="btn btn-primary">
-        Submit
-      </button>
-    </form>
+    <>
+      <form onSubmit={handleSubmit(data => {
+        onSubmit(data);
+        reset();
+      })}>
+        <div className="mb-3">
+          <label htmlFor="description">Description</label>
+          <input
+            {...register("description")}
+            id="description"
+            type="text"
+            className="form-control"
+          />
+          {errors.description && <p className="text-danger">{errors.description.message}</p>}
+        </div>
+        <div className="mb-3">
+          <label htmlFor="amount">Amount</label>
+          <input
+            {...register("amount", {valueAsNumber: true})}
+            id="amount"
+            type="number"
+            className="form-control"
+          />
+          {errors.amount && <p className="text-danger">{errors.amount.message}</p>}
+        </div>
+        <div className="mb-3">
+          <label htmlFor="category">Category</label>
+          <select {...register('category')} id="category" className="form-select">
+            <option value=""></option>
+            {categories.map((category) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
+          </select>
+          {errors.category && <p className="text-danger">{errors.category.message}</p>}
+        </div>
+        <button className="btn btn-primary">Add</button>
+      </form>
+    </>
   );
 };
 
